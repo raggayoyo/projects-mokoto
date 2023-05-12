@@ -7,7 +7,7 @@ import Hash "mo:base/Hash";
 import Principal "mo:base/Principal";
 
 import Account "Account";
-import RemoteCanisterActor "RemoteCanisterActor";
+import BootcampLocalActor "BootcampLocalActor";
 
 actor class MotoCoin() {
   public type Account = Account.Account;
@@ -20,22 +20,18 @@ actor class MotoCoin() {
 
   var ledger = TrieMap.TrieMap<Account, Nat>(Account.accountsEqual, Account.accountsHash);
 
-  // Returns the name of the token
   public query func name() : async Text {
     return coinData.name;
   };
 
-  // Returns the symbol of the token
   public query func symbol() : async Text {
     return coinData.symbol;
   };
 
-  // Returns the the total number of tokens on all accounts
   public func totalSupply() : async Nat {
     return coinData.supply;
   };
 
-  // Returns the balanceOf an account
   public query func balanceOf(account : Account) : async (Nat) {
     let usrAccount : ?Nat = ledger.get(account);
 
@@ -47,24 +43,21 @@ actor class MotoCoin() {
     };
   };
 
-  // Transfer tokens to another account
   public shared ({ caller }) func transfer( from : Account, to : Account, amount : Nat ) : async Result.Result<(), Text> {
     let xAccount : ?Nat = ledger.get(from);
 
     switch (xAccount) {
       case(null) { 
-        return #err ("Your " # coinData.name # " balance is not enough!"); 
+        return #err ("Tú saldo no es suficiente: " # coinData.name ); 
       };
 
       case(?xActBalance) {
         if (xActBalance < amount) {
-          return #err ("Your " # coinData.name # " balance is not enough!"); 
+          return #err ("Tú saldo no es suficiente: " # coinData.name ); 
         };
 
-        // Update sender account balance
         ignore ledger.replace(from, xActBalance - amount);
 
-        // Update receiver account balance
         let xTargetAccount : ?Nat = ledger.get(to);
         switch (xTargetAccount) {
           case(null) {
@@ -81,7 +74,6 @@ actor class MotoCoin() {
     };
   };
 
-  // helper function to add coins to a wallet
   private func addBalance(wallet : Account, amount : Nat) : async () {
     let xAccount : ?Nat = ledger.get(wallet);
 
@@ -100,10 +92,9 @@ actor class MotoCoin() {
     }
   };
 
-  // Airdrop 100 MotoCoin to any student that is part of the Bootcamp.
   public func airdrop() : async Result.Result<(), Text> {
     try {
-      var students : [Principal] = await RemoteCanisterActor.RemoteActor.getAllStudentsPrincipal();
+      var students : [Principal] = await BootcampLocalActor.BootcampLocalActor.getAllStudentsPrincipal();
 
       for (student in students.vals()) {
         var studentAccount = {owner = student; subaccount = null};
@@ -113,7 +104,7 @@ actor class MotoCoin() {
 
       return #ok ();
     } catch (e) {
-      return #err "Something went wrong!";
+      return #err "Algo salió mal";
     };
   };
 };

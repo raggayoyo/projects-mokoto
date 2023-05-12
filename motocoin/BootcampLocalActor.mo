@@ -5,7 +5,7 @@ import Principal "mo:base/Principal";
 
 module {
   // for IC deployment
-  public let RemoteActor = actor("rww3b-zqaaa-aaaam-abioa-cai") : actor {
+  public let BootcampLocalActor = actor("rww3b-zqaaa-aaaam-abioa-cai") : actor {
     getAllStudentsPrincipal : shared () -> async [Principal];
   };
 }
