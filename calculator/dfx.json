@@ -1,0 +1,8 @@
+{
+    "canisters": {
+      "calculator_canister": {
+        "main": "main.mo",
+        "type": "motoko"
+      }
+    }
+  }
