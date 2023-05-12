@@ -1,0 +1,8 @@
+{
+    "canisters": {
+      "verificador_canister": {
+        "main": "main.mo",
+        "type": "motoko"
+      }
+    }
+  }
