@@ -9,7 +9,6 @@ import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Timer "mo:base/Timer";
 import Buffer "mo:base/Buffer";
-
 import Type "Types";
 import Ic "Ic";
 
